@@ -1,0 +1,34 @@
+---
+// src/pages/chapters/[...slug].astro
+import { getCollection } from 'astro:content';
+// 1. Import your React MangaReader component
+import MangaReader from '../../components/MangaReader.jsx';
+// 2. Import a simple layout (we'll create this next)
+import MainLayout from '../../layouts/MainLayout.astro'; 
+
+// 3. getStaticPaths: Generates a path for every chapter found in the 'chapters' collection.
+export async function getStaticPaths() {
+  const allChapters = await getCollection('chapters');
+  
+  // Maps the content to the required structure { params: { slug }, props: { chapter } }
+  return allChapters.map((chapter) => ({
+    params: { slug: chapter.slug }, // e.g., 'chapter-1-the-beginning'
+    props: { chapter },
+  }));
+}
+
+// 4. Get the chapter data for the current page being built
+const { chapter } = Astro.props;
+const { title, series, pages } = chapter.data;
+---
+
+<MainLayout title={`${series} - ${title}`}>
+    <h1 class="text-3xl font-extrabold text-center py-6 bg-base-100">
+        {series}: {title}
+    </h1>
+    
+    <MangaReader 
+        client:load 
+        pages={pages} 
+    />
+    </MainLayout>

@@ -1,0 +1,38 @@
+# public/admin/config.yml
+backend:
+  # Vercel requires manual authentication setup, so we use 'github'
+  name: github
+  # REPLACE THIS: Your GitHub username and repository name
+  repo: your-github-username/your-repo-name 
+  # REPLACE THIS: The branch where published content goes (usually 'main')
+  branch: main
+  # Base URL for the OAuth serverless functions (to be created next)
+  base_url: https://your-vercel-app-name.vercel.app 
+  # Endpoint for the authorization logic
+  auth_endpoint: /api/auth
+  # Endpoint where GitHub redirects after login
+  site_domain: your-vercel-app-name.vercel.app
+
+# Where files will be stored in your Git repository
+media_folder: "public/uploads"
+# The public path to files for the built site
+public_folder: "/uploads"
+
+# Content Collections (Manga Chapters)
+collections:
+  - name: 'chapters' # Must match the key in src/content/config.ts
+    label: 'Manga Chapters'
+    folder: 'src/content/chapters' # Folder where Markdown files will be created
+    create: true
+    slug: '{{series}}-{{chapter_number}}' # Filename pattern (e.g., my-manga-01.md)
+    fields:
+      # These fields must match the schema defined in src/content/config.ts
+      - {label: 'Title', name: 'title', widget: 'string'}
+      - {label: 'Series Name', name: 'series', widget: 'string'}
+      - {label: 'Chapter Number', name: 'chapter_number', widget: 'number', value_type: 'int'}
+      - {label: 'Release Date', name: 'release_date', widget: 'datetime'}
+      # This is the key field for manga pages
+      - label: 'Pages'
+        name: 'pages'
+        widget: 'list'
+        field: {label: 'Page Image', name: 'page_image', widget: 'image', media_folder: 'src/assets/manga-pages', public_folder: '/_astro/assets/manga-pages', allow_multiple: false}
